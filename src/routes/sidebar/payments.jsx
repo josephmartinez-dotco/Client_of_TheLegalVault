@@ -10,6 +10,45 @@ export const Payments = () => {
     const [cases, setCases] = useState([]);
     const [selectedCaseBalance, setSelectedCaseBalance] = useState(null);
 
+    const bankBranchOptions = [
+        "BDO",
+        "BPI",
+        "Metrobank",
+        "Landbank",
+        "PNB",
+        "Security Bank",
+        "RCBC",
+        "China Bank",
+        "UnionBank",
+        "EastWest Bank",
+    ];
+
+    const branchLocationOptions = [
+        "Makati",
+        "Quezon City",
+        "Cebu",
+        "Davao",
+        "Pasig",
+        "Taguig",
+        "Pasig City",
+        "Mandaluyong",
+        "Ortigas",
+        "Alabang",
+        "iloilo",
+        "Bacolod",
+        "Cagayan de Oro",
+        "Baguio",
+        "Dumaguete",
+        "Zamboanga",
+        "General Santos",
+        "Butuan",
+        "Iligan",
+        "Marawi",
+        "Samar",
+        "Tarlac",
+    ];
+
+
     // Helpers
     const formatCurrency = (amount) =>
         new Intl.NumberFormat("en-PH", {
@@ -94,6 +133,8 @@ export const Payments = () => {
     const [chequeDetails, setChequeDetails] = useState({
         cheque_name: "",
         cheque_number: "",
+        cheque_branch: "",
+        cheque_location: "",
     });
     const [selectedCheque, setSelectedCheque] = useState(null);
     const [selectedCash, setSelectedCash] = useState(null);
@@ -165,11 +206,22 @@ export const Payments = () => {
                     toast.error("Cheque number is required for cheque payments.", { id: toastId });
                     return;
                 }
+                if (!chequeDetails.cheque_branch?.trim()) {
+                    toast.error("Cheque branch is required for cheque payments.", { id: toastId });
+                    return;
+                }
+                if (!chequeDetails.cheque_location?.trim()) {
+                    toast.error("Cheque branch location is required for cheque payments.", { id: toastId });
+                    return;
+                }
+
                 // Send both formats to ensure compatibility
                 paymentData.check_name = chequeDetails.cheque_name.trim();
                 paymentData.check_number = chequeDetails.cheque_number.trim();
                 paymentData.cheque_name = chequeDetails.cheque_name.trim();
                 paymentData.cheque_number = chequeDetails.cheque_number.trim();
+                paymentData.cheque_branch = chequeDetails.cheque_branch.trim();
+                paymentData.cheque_location = chequeDetails.cheque_location.trim();
             }
 
             console.log("Sending payment data:", paymentData); // Debug log
@@ -189,7 +241,7 @@ export const Payments = () => {
                 setPaymentsData((prev) => [...prev, data]);
                 toast.success("Payment added successfully!", { id: toastId, duration: 4000 });
                 setAddPayment(null);
-                setChequeDetails({ cheque_name: "", cheque_number: "" });
+                setChequeDetails({ cheque_name: "", cheque_number: "", cheque_branch: "", cheque_location: "" });
             } else {
                 console.error("Payment failed:", data); // Debug log
                 toast.error(data.error || data.message || "Failed to add payment", { id: toastId });
@@ -267,7 +319,7 @@ export const Payments = () => {
                 <button
                     onClick={() => {
                         setAddPayment({ case_id: "", user_id: user.user_id, payment_amount: "", payment_type: "" });
-                        setChequeDetails({ cheque_name: "", cheque_number: "" });
+                        setChequeDetails({ cheque_name: "", cheque_number: "", cheque_branch: "", cheque_location: "" });
                     }}
                     className="flex h-10 items-center justify-center rounded-lg bg-green-600 px-4 text-sm font-medium text-white shadow hover:bg-green-700"
                 >
@@ -494,7 +546,7 @@ export const Payments = () => {
                                         setAddPayment({ ...addPayment, payment_type: e.target.value });
                                         // Reset cheque details when payment type changes
                                         if (e.target.value !== "Cheque") {
-                                            setChequeDetails({ cheque_name: "", cheque_number: "" });
+                                            setChequeDetails({ cheque_name: "", cheque_number: "", cheque_branch: "", cheque_location: "" });
                                         }
                                     }}
                                     className="w-full rounded-md border px-3 py-2 dark:bg-slate-700 dark:text-slate-50"
@@ -536,6 +588,42 @@ export const Payments = () => {
                                             className="w-full rounded-md border px-3 py-2 dark:bg-slate-700 dark:text-slate-50"
                                             placeholder="Enter cheque number"
                                         />
+                                    </div>
+                                    <div>
+                                        <label className="font-semibold dark:text-blue-700">Bank Branch *</label>
+                                        <select
+                                            value={chequeDetails.cheque_branch}
+                                            onChange={(e) => setChequeDetails({ ...chequeDetails, cheque_branch: e.target.value })}
+                                            className="w-full rounded-md border px-3 py-2 dark:bg-slate-700 dark:text-slate-50"
+                                        >
+                                            <option value="" disabled>Select Bank Branch</option>
+                                            {bankBranchOptions.map((branch) => (
+                                                <option
+                                                    key={branch}
+                                                    value={branch}
+                                                >
+                                                    {branch}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="font-semibold dark:text-blue-700"> Branch Location *</label>
+                                        <select
+                                            value={chequeDetails.cheque_location}
+                                            onChange={(e) => setChequeDetails({ ...chequeDetails, cheque_location: e.target.value })}
+                                            className="w-full rounded-md border px-3 py-2 dark:bg-slate-700 dark:text-slate-50"
+                                        >
+                                            <option value="" disabled>Select Branch Location</option>
+                                            {branchLocationOptions.map((location) => (
+                                                <option
+                                                    key={location}
+                                                    value={location}
+                                                >
+                                                    {location}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                 </>
                             )}
@@ -613,6 +701,18 @@ export const Payments = () => {
                                     <p className="text-sm font-medium text-gray-600 dark:text-gray-400">CHEQUE NUMBER</p>
                                     <p className="font-mono text-lg font-semibold text-gray-900 dark:text-white">
                                         {selectedCheque.cheque_number || selectedCheque.check_number || "N/A"}
+                                    </p>
+                                </div>
+                                <div className="rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">BANK BRANCH</p>
+                                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                                        {selectedCheque.cheque_branch || selectedCheque.check_branch || "N/A"}
+                                    </p>
+                                </div>
+                                <div className="rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">BRANCH LOCATION</p>
+                                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                                        {selectedCheque.cheque_location || selectedCheque.check_location || "N/A"}
                                     </p>
                                 </div>
                             </div>

@@ -295,6 +295,12 @@ const Tasks = () => {
         setShowRejectModal(false);
     };
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 5;
+    const totalPages = Math.ceil(tasks.length / rowsPerPage);
+    const paginatedTasks = tasks.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
     //
 
     return (
@@ -394,10 +400,10 @@ const Tasks = () => {
                                                     {task.doc_status === "todo"
                                                         ? "To Do"
                                                         : task.doc_status === "in_progress"
-                                                          ? "In Progress"
-                                                          : task.doc_status === "done"
-                                                            ? "Done"
-                                                            : task.doc_status}
+                                                            ? "In Progress"
+                                                            : task.doc_status === "done"
+                                                                ? "Done"
+                                                                : task.doc_status}
                                                 </td>
                                                 <td className="px-4 py-3 text-slate-700 dark:text-slate-200">
                                                     {getUserFullName(task.doc_tasked_to) || "-"}
@@ -470,10 +476,10 @@ const Tasks = () => {
                                                 {task.doc_status === "todo"
                                                     ? "To Do"
                                                     : task.doc_status === "in_progress"
-                                                      ? "In Progress"
-                                                      : task.doc_status === "done"
-                                                        ? "Done"
-                                                        : task.doc_status}
+                                                        ? "In Progress"
+                                                        : task.doc_status === "done"
+                                                            ? "Done"
+                                                            : task.doc_status}
                                             </td>
 
                                             {/* Due Date + Priority */}
@@ -484,15 +490,14 @@ const Tasks = () => {
                                                     </span>
                                                     <span
                                                         title={`Priority: ${task.doc_prio_level || "None"}`}
-                                                        className={`inline-block h-2.5 w-2.5 rounded-full ${
-                                                            task.doc_prio_level === "High"
-                                                                ? "bg-red-500"
-                                                                : task.doc_prio_level === "Mid"
-                                                                  ? "bg-yellow-500"
-                                                                  : task.doc_prio_level === "Low"
+                                                        className={`inline-block h-2.5 w-2.5 rounded-full ${task.doc_prio_level === "High"
+                                                            ? "bg-red-500"
+                                                            : task.doc_prio_level === "Mid"
+                                                                ? "bg-yellow-500"
+                                                                : task.doc_prio_level === "Low"
                                                                     ? "bg-blue-500"
                                                                     : "bg-gray-400"
-                                                        }`}
+                                                            }`}
                                                     ></span>
                                                 </div>
                                             </td>
@@ -504,33 +509,30 @@ const Tasks = () => {
                                                         <button
                                                             onClick={() => updateTaskStatus(task.doc_id, STATUS_IDS.TODO)}
                                                             disabled={task.doc_status === STATUS_IDS.TODO}
-                                                            className={`rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700 ${
-                                                                task.doc_status === STATUS_IDS.TODO
-                                                                    ? "cursor-not-allowed bg-slate-100 text-slate-400 dark:bg-slate-700/30 dark:text-slate-500"
-                                                                    : "bg-white text-slate-700 dark:bg-slate-700/40 dark:text-slate-200"
-                                                            }`}
+                                                            className={`rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700 ${task.doc_status === STATUS_IDS.TODO
+                                                                ? "cursor-not-allowed bg-slate-100 text-slate-400 dark:bg-slate-700/30 dark:text-slate-500"
+                                                                : "bg-white text-slate-700 dark:bg-slate-700/40 dark:text-slate-200"
+                                                                }`}
                                                         >
                                                             To Do
                                                         </button>
                                                         <button
                                                             onClick={() => updateTaskStatus(task.doc_id, STATUS_IDS.INPROGRESS)}
                                                             disabled={task.doc_status === STATUS_IDS.INPROGRESS}
-                                                            className={`rounded-md px-3 py-1.5 text-xs font-medium text-white ${
-                                                                task.doc_status === STATUS_IDS.INPROGRESS
-                                                                    ? "cursor-not-allowed bg-indigo-400"
-                                                                    : "bg-indigo-600 hover:bg-indigo-700"
-                                                            }`}
+                                                            className={`rounded-md px-3 py-1.5 text-xs font-medium text-white ${task.doc_status === STATUS_IDS.INPROGRESS
+                                                                ? "cursor-not-allowed bg-indigo-400"
+                                                                : "bg-indigo-600 hover:bg-indigo-700"
+                                                                }`}
                                                         >
                                                             Progress
                                                         </button>
                                                         <button
                                                             onClick={() => updateTaskStatus(task.doc_id, STATUS_IDS.DONE)}
                                                             disabled={task.doc_status === STATUS_IDS.DONE}
-                                                            className={`rounded-md px-3 py-1.5 text-xs font-medium text-white ${
-                                                                task.doc_status === STATUS_IDS.DONE
-                                                                    ? "cursor-not-allowed bg-emerald-400"
-                                                                    : "bg-emerald-600 hover:bg-emerald-700"
-                                                            }`}
+                                                            className={`rounded-md px-3 py-1.5 text-xs font-medium text-white ${task.doc_status === STATUS_IDS.DONE
+                                                                ? "cursor-not-allowed bg-emerald-400"
+                                                                : "bg-emerald-600 hover:bg-emerald-700"
+                                                                }`}
                                                         >
                                                             Done
                                                         </button>
@@ -564,6 +566,31 @@ const Tasks = () => {
                 </div>
             </div>
 
+            {/* Pagination */}
+            <div className="mt-2 flex items-center justify-between px-4 py-3 text-sm text-gray-700 dark:text-white">
+                {totalPages > 1 && (
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="rounded border border-gray-300 bg-white px-3 py-1 hover:bg-gray-100 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+                        >
+                            &lt;
+                        </button>
+                        <span>
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="rounded border border-gray-300 bg-white px-3 py-1 hover:bg-gray-100 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+                        >
+                            &gt;
+                        </button>
+                    </div>
+                )}
+            </div>
+
             {/* Task Details Modal */}
             {selectedTask && (
                 <div className="animate-fadeIn fixed inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-out">
@@ -590,13 +617,12 @@ const Tasks = () => {
                                 <div>
                                     <p className="text-slate-500 dark:text-slate-400">Priority</p>
                                     <p
-                                        className={`mt-0.5 inline-block rounded-md px-2 py-0.5 text-xs font-medium ${
-                                            selectedTask.doc_prio_level === "High"
-                                                ? "bg-red-100 text-red-700 dark:bg-red-700/30 dark:text-red-300"
-                                                : selectedTask.doc_prio_level === "Mid"
-                                                  ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300"
-                                                  : "bg-blue-100 text-blue-700 dark:bg-blue-700/30 dark:text-blue-300"
-                                        }`}
+                                        className={`mt-0.5 inline-block rounded-md px-2 py-0.5 text-xs font-medium ${selectedTask.doc_prio_level === "High"
+                                            ? "bg-red-100 text-red-700 dark:bg-red-700/30 dark:text-red-300"
+                                            : selectedTask.doc_prio_level === "Mid"
+                                                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300"
+                                                : "bg-blue-100 text-blue-700 dark:bg-blue-700/30 dark:text-blue-300"
+                                            }`}
                                     >
                                         {selectedTask.doc_prio_level || "None"}
                                     </p>
@@ -607,8 +633,8 @@ const Tasks = () => {
                                         {selectedTask.doc_status === "todo"
                                             ? "to do"
                                             : selectedTask.doc_status === "in_progress"
-                                              ? "in progress"
-                                              : "done" || "Unknown"}
+                                                ? "in progress"
+                                                : "done" || "Unknown"}
                                     </p>
                                 </div>
                                 <div>
