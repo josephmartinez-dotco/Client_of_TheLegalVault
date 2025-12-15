@@ -11,7 +11,7 @@ const Userlogs = () => {
     const [search, setSearch] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
 
-    const [visibleCount, setVisibleCount] = useState(5);
+    const [visibleCount, setVisibleCount] = useState(5); // default number of logs to show
 
     // fetching user logs
     useEffect(() => {
@@ -101,6 +101,10 @@ const Userlogs = () => {
         return "Action";
     };
 
+    // // Pagination
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const itemsPerPage = 3;
+
     // Filtered directly in render
     const filteredLogs = userLogs.filter((log) => {
         const matchSearch =
@@ -112,6 +116,11 @@ const Userlogs = () => {
 
         return matchSearch && matchDate;
     });
+
+    // // Pagination logic
+    // const totalPages = Math.ceil(filteredLogs.length / itemsPerPage) || 1;
+    // const startIndex = (currentPage - 1) * itemsPerPage;
+    // const paginatedLogs = filteredLogs.slice(startIndex, startIndex + itemsPerPage);
 
     return (
         <div className="min-h-screen">
@@ -219,6 +228,34 @@ const Userlogs = () => {
                     </button>
                 </div>
             )}
+
+            {/*  Pagination Controls */}
+            {/* {totalPages > 1 && (
+                <div className="mt-2 flex items-center justify-end px-4 py-3 text-sm text-gray-700 dark:text-white">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="rounded border border-gray-300 bg-white px-3 py-1 hover:bg-gray-100 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+                        >
+                            &lt;
+                        </button>
+
+                        <div>
+                            Page {currentPage} of {totalPages}
+                        </div>
+
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="rounded border border-gray-300 bg-white px-3 py-1 hover:bg-gray-100 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600"
+                        >
+                            &gt;
+                        </button>
+                    </div>
+                </div>
+            )} */}
+            
         </div>
     );
 };

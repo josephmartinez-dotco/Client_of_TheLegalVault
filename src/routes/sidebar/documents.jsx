@@ -36,8 +36,8 @@ const Documents = () => {
                 user.user_role === "Admin"
                     ? "http://localhost:3000/api/documents"
                     : user.user_role === "Lawyer"
-                        ? `http://localhost:3000/api/documents/lawyer/${user.user_id}`
-                        : `http://localhost:3000/api/documents/submitter/${user.user_id}`;
+                      ? `http://localhost:3000/api/documents/lawyer/${user.user_id}`
+                      : `http://localhost:3000/api/documents/submitter/${user.user_id}`;
 
             const res = await fetch(doc_endpoint, {
                 credentials: "include",
@@ -135,9 +135,7 @@ const Documents = () => {
                     if (!res.ok) throw new Error(`Failed to trash document (${res.status})`);
                     // Refresh document list
                     fetchDocs();
-                    setDocuments(documents.map((doc) =>
-                        doc.doc_id === docToDelete.doc_id ? { ...doc, is_deleted: true } : doc
-                    ));
+                    setDocuments(documents.map((doc) => (doc.doc_id === docToDelete.doc_id ? { ...doc, is_deleted: true } : doc)));
                     setDocToDelete(null);
                     setShowDeleteModal(false);
                     toast.success("Document moved to Recently Deleted", { duration: 4000 });
@@ -164,7 +162,7 @@ const Documents = () => {
     // Filtered list (by name, type, case id, submitted/tasked by)
     const filteredDocs = documents.filter((doc) => {
         if (doc.is_deleted) return false; // Hide deleted docs from main list
-        // Tab filtering by 
+        // Tab filtering by
         if (statusFilter === "All") return true;
         if (statusFilter === "Task" && doc.doc_type !== "Task") return false;
         if ((statusFilter === "Support" || statusFilter === "") && doc.doc_type !== "Support") return false;
@@ -233,8 +231,9 @@ const Documents = () => {
                                 <button
                                     key={tab}
                                     onClick={() => setStatusFilter(tab === "All" ? "" : tab)}
-                                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${active ? baseColors[tab] : "bg-gray-200 text-gray-700 dark:bg-slate-700 dark:text-slate-200"
-                                        }`}
+                                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                                        active ? baseColors[tab] : "bg-gray-200 text-gray-700 dark:bg-slate-700 dark:text-slate-200"
+                                    }`}
                                 >
                                     {tab}
                                 </button>

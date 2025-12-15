@@ -200,11 +200,13 @@ export const ProfileModal = ({ onClose }) => {
                         />
                     )}
 
+                    {/* User's Fullname */}
                     <h2 className="text-center text-lg font-bold text-gray-800 dark:text-white">
                         {[formData.user_fname, formData.user_mname, formData.user_lname].filter(Boolean).join(" ")}
                     </h2>
+                    {/* User's Role */}
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {formData.user_role === "Admin" ? "Super Lawyer / Admin" : formData.user_role}
+                        {formData.user_role === "Ad" ? "Super Lawyminer / Admin" : formData.user_role}
                     </p>
                 </div>
 

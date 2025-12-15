@@ -118,6 +118,7 @@ const Client = () => {
         }
     };
 
+    // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
 
